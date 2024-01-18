@@ -2,6 +2,7 @@ package com.example.pos2.db;
 
 import com.example.pos2.dto.CustomerDTO;
 import com.example.pos2.dto.ItemDTO;
+import com.example.pos2.dto.OrdersDTO;
 import jakarta.servlet.http.HttpServlet;
 
 import java.sql.Connection;
@@ -14,6 +15,7 @@ public class DBProcess extends HttpServlet {
 
     public static final String save_item_data = "INSERT INTO item (item_code,item_name,price,qty) VALUES (?,?,?,?)";
     public static final String save_customer_data = "INSERT INTO customer (customer_code,customer_name,customer_address,salary) VALUES (?,?,?,?)";
+    public static final String save_order_data = "INSERT INTO orders (order_code,date,customer_name,total,discount) VALUES (?,?,?,?,?)";
 
     public void saveItem(List<ItemDTO> itemList, Connection conection) throws SQLException {
         System.out.println("Hello");
@@ -66,6 +68,32 @@ public class DBProcess extends HttpServlet {
             }else {
 //            logger.error("Failed to save!");
                 System.out.println("customer not saved");
+            }
+        }
+
+    }
+
+    public void saveOrder(List<OrdersDTO> orderList, Connection conection) throws SQLException {
+
+        connection = conection;
+        var ps = connection.prepareStatement(save_order_data);
+
+        System.out.println(orderList.size());
+
+        for (OrdersDTO orders:orderList) {
+
+            ps.setString(1, orders.getOrder_id());
+            ps.setString(2, orders.getDate());
+            ps.setString(3, orders.getO_cust_id());
+            ps.setDouble(4, orders.getTotal());
+            ps.setInt(5,orders.getDiscount());
+
+            if (ps.executeUpdate() != 0) {
+//            logger.info("Data Saved!");
+                System.out.println("order saved");
+            }else {
+//            logger.error("Failed to save!");
+                System.out.println("order not saved");
             }
         }
 

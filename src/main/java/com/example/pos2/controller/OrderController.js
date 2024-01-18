@@ -274,6 +274,35 @@ $("#o_table").on("click", "button", function () {
 
 // do purchase
 $("#purchase_btn").on("click", () => {
+    console.log("success order");
+    var http = new XMLHttpRequest();
+
+    http.open("POST" , "http://localhost:8080/pos2/order", true);
+    http.setRequestHeader("Content-Type", "application/json");
+
+    http.onreadystatechange = function () {
+        if (http.readyState == 4 && http.status == 200) {
+            console.log(http.responseText);
+        }
+    };
+
+    var data = [
+        {
+            order_id: $("#o_id").val(),
+            date: $("#date").val(),
+            cust_id: $("#customer").val(),
+            total: $("#cash").val(),
+            discount: $('#discount').val()
+        }
+    ];
+
+    var jsonData = JSON.stringify(data);
+
+    http.send(jsonData);
+
+
+
+
     if (!checkFields()) {
         return;
     }
