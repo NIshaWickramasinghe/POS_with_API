@@ -14,28 +14,31 @@ public class DBProcess extends HttpServlet {
     public static final String save_item_data = "INSERT INTO item (item_code,item_name,price,qty) VALUES (?,?,?,?)";
 
     public void saveItem(List<ItemDTO> itemList, Connection conection) throws SQLException {
-
+        System.out.println("Hello");
         connection = conection;
         var ps = connection.prepareStatement(save_item_data);
+        System.out.println("Hello2");
 
 //        var itemId = UUID.randomUUID();
-
+        System.out.println("Hello3");
+        System.out.println(itemList.size());
 
         for (ItemDTO item:itemList) {
 
             ps.setString(1, item.getItem_id());
             ps.setString(2, item.getItem_name());
-            ps.setString(3, String.valueOf(item.getItem_price()));
-            ps.setString(4, String.valueOf(item.getItem_qty()));
+            ps.setDouble(3, item.getItem_price());
+            ps.setInt(4, item.getItem_qty());
 
-        }
-        if (ps.executeUpdate() != 0) {
+            if (ps.executeUpdate() != 0) {
 //            logger.info("Data Saved!");
-            System.out.println("item saved");
-        }else {
+                System.out.println("item saved");
+            }else {
 //            logger.error("Failed to save!");
-            System.out.println("item not saved");
+                System.out.println("item not saved");
+            }
         }
+
     }
 
 }

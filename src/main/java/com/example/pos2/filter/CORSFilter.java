@@ -19,6 +19,7 @@ public class CORSFilter extends HttpFilter {
             res.setHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,HEADER");
             res.setHeader("Access-Control-Allow-Headers","Content-Type");
             res.setHeader("Access-Control-Expose-Headers","Content-Type");
+
         }
         chain.doFilter(req,res);
 

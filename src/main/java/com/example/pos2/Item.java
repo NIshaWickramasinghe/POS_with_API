@@ -2,6 +2,7 @@ package com.example.pos2;
 
 import com.example.pos2.db.DBProcess;
 import com.example.pos2.dto.ItemDTO;
+import com.example.pos2.util.DBConnectionUtil;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -17,7 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "item" , value = "/item" ,
+@WebServlet(name = "item", value = "/item",
         initParams = {
                 @WebInitParam(name = "user", value = "root"),
                 @WebInitParam(name = "pw", value = "1234"),
@@ -28,29 +29,45 @@ import java.util.List;
 )
 public class Item extends HttpServlet {
 
-        Connection connection;
-        @Override
-        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                if(req.getContentType() == null ||
-                        !req.getContentType().toLowerCase().startsWith("application/json")){
-                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                }else {
-                        Jsonb jsonb = JsonbBuilder.create();
-                        List<ItemDTO> itemList= jsonb.fromJson(req.getReader(),new ArrayList<ItemDTO>(){
-                        }.getClass().getGenericSuperclass());
-                        var dbProcess = new DBProcess();
-                        try {
-                                dbProcess.saveItem(itemList,connection);
-                        } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                        }
-                        //itemList.forEach(System.out::println);
-                        jsonb.toJson(itemList,resp.getWriter());
-                }
-        }
+    Connection connection;
 
-        @Override
-        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                System.out.println("servlet is working!");
+    {
+        try {
+            connection = DBConnectionUtil.getInstance().getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(1);
+        if (req.getContentType() == null ||
+                !req.getContentType().toLowerCase().startsWith("application/json")) {
+            System.out.println(2);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            System.out.println(3);
+            Jsonb jsonb = JsonbBuilder.create();
+            List<ItemDTO> itemList = jsonb.fromJson(req.getReader(), new ArrayList<ItemDTO>() {
+            }.getClass().getGenericSuperclass());
+            var dbProcess = new DBProcess();
+            System.out.println(itemList.get(0));
+            try {
+                dbProcess.saveItem(itemList, connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            //itemList.forEach(System.out::println);
+            jsonb.toJson(itemList, resp.getWriter());
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("servlet is working!");
+    }
 }

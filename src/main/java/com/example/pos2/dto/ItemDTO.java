@@ -70,4 +70,5 @@ public class ItemDTO implements Serializable {
     public void setItem_qty(int item_qty) {
         this.item_qty = item_qty;
     }
+
 }
