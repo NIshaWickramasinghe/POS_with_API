@@ -43,13 +43,10 @@ public class Item extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(1);
         if (req.getContentType() == null ||
                 !req.getContentType().toLowerCase().startsWith("application/json")) {
-            System.out.println(2);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            System.out.println(3);
             Jsonb jsonb = JsonbBuilder.create();
             List<ItemDTO> itemList = jsonb.fromJson(req.getReader(), new ArrayList<ItemDTO>() {
             }.getClass().getGenericSuperclass());

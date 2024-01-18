@@ -84,6 +84,32 @@ $(" #c_table ").on('click', 'tr ', function () {
 
 // save
 $("#c_save").on('click', () => {
+    console.log("success customer");
+    var http = new XMLHttpRequest();
+
+    http.open("POST" , "http://localhost:8080/pos2/customer", true);
+    http.setRequestHeader("Content-Type", "application/json");
+
+    http.onreadystatechange = function () {
+        if (http.readyState == 4 && http.status == 200) {
+            console.log(http.responseText);
+        }
+    };
+
+    var data = [
+        {
+            customer_id: $("#c_c_id").val(),
+            customer_name: $("#c_c_name").val(),
+            customer_address: $("#c_c_address").val(),
+            customer_salary: $("#c_c_salary").val()
+        }
+    ];
+
+    var jsonData = JSON.stringify(data);
+
+    http.send(jsonData);
+
+
     if (!checkFields()) {
         return;
     }
